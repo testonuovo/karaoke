@@ -153,7 +153,21 @@
             </div>
         </div>
     </div>
+<div id="karaoke">
+    <audio id="song" controls>
+        <source src="musica.mp3" type="audio/mp3">
+    </audio>
 
+    <div id="lyrics" style="font-size:22px; margin-top:20px;"></div>
+</div>
+    const lyrics = [
+    { time: 0, text: "🎵 Inizio canzone" },
+    { time: 5, text: "Prima frase del testo" },
+    { time: 10, text: "Seconda frase" },
+    { time: 15, text: "Continuo a cantare" },
+    { time: 20, text: "Fine strofa" }
+];
+  
     <!-- Song Selection -->
     <div id="songSelection" class="max-w-4xl mx-auto p-6">
         <h2 class="text-2xl font-bold mb-6 text-center">Scegli la tua canzone</h2>
@@ -1001,7 +1015,20 @@
             
             updateScore();
         }
+const audio = document.getElementById("song");
+const lyricsBox = document.getElementById("lyrics");
 
+audio.ontimeupdate = function () {
+    let t = audio.currentTime;
+
+    for (let i = 0; i < lyrics.length; i++) {
+        if (t >= lyrics[i].time &&
+            (i === lyrics.length - 1 || t < lyrics[i + 1].time)) {
+
+            lyricsBox.innerText = lyrics[i].text;
+        }
+    }
+};
         function showFeedback(text, type) {
             // Remove existing popups
             document.querySelectorAll('.score-popup').forEach(popup => popup.remove());
@@ -1036,7 +1063,15 @@
                 setTimeout(() => popup.remove(), 300);
             }, 1500);
         }
+        audio.onplay = () => {
+    lyricsBox.style.color = "yellow";
+    lyricsBox.style.transform = "scale(1.1)";
+};
 
+audio.onpause = () => {
+    lyricsBox.style.color = "white";
+    lyricsBox.style.transform = "scale(1)";
+};
         function updateScore() {
             document.getElementById('score').textContent = score;
             document.getElementById('combo').textContent = `${combo}x`;
